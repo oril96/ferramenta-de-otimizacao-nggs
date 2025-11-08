@@ -2,9 +2,10 @@ import logging
 import json
 from typing import Callable, Any
 
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 
 from src.commands import network_cache, local_cache, power_manager, game_optimizer
+from src.utils.resources import resource_path
 from src.ui.strings import (
     APP_TITLE,
     SECTION_NETWORK_SYSTEM,
@@ -55,8 +56,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.status.showMessage("Pronto")
 
         central = QtWidgets.QWidget(self)
+        central.setObjectName("central_area")
         layout = QtWidgets.QVBoxLayout(central)
         layout.setSpacing(12)
+
+        # Background image layer
+        self._bg_label = QtWidgets.QLabel(central)
+        self._bg_label.setObjectName("background_label")
+        self._bg_label.setScaledContents(True)
+        self._bg_label.setGeometry(0, 0, 10, 10)
+        self._bg_label.setAttribute(QtCore.Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        self._bg_label.lower()
 
         # Section: Rede e Sistema
         box_rs = QtWidgets.QGroupBox(SECTION_NETWORK_SYSTEM)
@@ -90,6 +100,9 @@ class MainWindow(QtWidgets.QMainWindow):
         layout.addStretch(1)
         self.setCentralWidget(central)
 
+        # Make central area transparent to see background image
+        central.setStyleSheet("background-color: transparent;")
+
         # Wire actions
         btn_net.clicked.connect(self._run_clear_network)
         btn_sys.clicked.connect(self._run_clear_local)
@@ -99,6 +112,10 @@ class MainWindow(QtWidgets.QMainWindow):
         btn_eco.clicked.connect(lambda: self._run_power(POWER_PAYLOAD_ECO))
         btn_perf.clicked.connect(lambda: self._run_power(POWER_PAYLOAD_HIGH))
         btn_ult.clicked.connect(lambda: self._run_power(POWER_PAYLOAD_ULTIMATE))
+
+        # Load background image now and on resize
+        self._bg_path = resource_path("backgroundnggs.png")
+        self._update_bg()
 
     # Helpers
     def _start_worker(self, fn: Callable, *a: Any, **kw: Any) -> None:
@@ -164,6 +181,26 @@ class MainWindow(QtWidgets.QMainWindow):
         mbox.setIcon(QtWidgets.QMessageBox.Icon.Information if ok else QtWidgets.QMessageBox.Icon.Warning)
         mbox.addButton(QtWidgets.QMessageBox.StandardButton.Ok)
         mbox.exec()
+
+    def _update_bg(self) -> None:
+        try:
+            if not self._bg_path:
+                return
+            pix = QtGui.QPixmap(self._bg_path)
+            if pix.isNull():
+                return
+            size = self.centralWidget().size()
+            # cover effect: expand while keeping aspect ratio
+            spix = pix.scaled(size, QtCore.Qt.AspectRatioMode.KeepAspectRatioByExpanding, QtCore.Qt.TransformationMode.SmoothTransformation)
+            self._bg_label.setPixmap(spix)
+            self._bg_label.setGeometry(0, 0, size.width(), size.height())
+            self._bg_label.lower()
+        except Exception:
+            pass
+
+    def resizeEvent(self, event: QtGui.QResizeEvent) -> None:  # type: ignore[override]
+        super().resizeEvent(event)
+        self._update_bg()
 
     # Actions
     def _run_clear_network(self) -> None:

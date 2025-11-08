@@ -1,7 +1,8 @@
 param(
     [switch]$OneFile,
     [string]$Icon = 'nggs.png',
-    [switch]$UacAdmin
+    [switch]$UacAdmin,
+    [string]$Name = 'otimizador NGGS-NegroMancer'
 )
 
 Set-StrictMode -Version Latest
@@ -19,7 +20,7 @@ function Exec($exe, [string[]]$argList=@()) {
 }
 
 # Ensure previous app instances are not locking files
-Get-Process -Name 'OptimusToolbox' -ErrorAction SilentlyContinue | ForEach-Object {
+Get-Process -Name $Name -ErrorAction SilentlyContinue | ForEach-Object {
     Write-Host "Stopping running process: $($_.Name) (Id=$($_.Id))" -ForegroundColor Yellow
     try { Stop-Process -Id $_.Id -Force -ErrorAction Stop } catch {}
 }
@@ -39,7 +40,7 @@ Exec $py @('-m','pip','install','--upgrade','pip')
 Exec $pip @('install','--upgrade','pyinstaller','PyQt6')
 
 # Verify PyQt6 import
-Exec $py @('-c','import PyQt6, sys; print("PyQt6 OK:", PyQt6.__file__)')
+Exec $py @('-c','import PyQt6, sys; print(''PyQt6 OK:'', PyQt6.__file__)')
 
 # Clean old build (best-effort)
 function SafeRemove($p) {
@@ -50,16 +51,17 @@ function SafeRemove($p) {
 }
 SafeRemove build
 SafeRemove dist
-if (Test-Path OptimusToolbox.spec) { Remove-Item -Force OptimusToolbox.spec -ErrorAction SilentlyContinue }
+if (Test-Path "$Name.spec") { Remove-Item -Force "$Name.spec" -ErrorAction SilentlyContinue }
+if (Test-Path *.spec) { Remove-Item -Force *.spec -ErrorAction SilentlyContinue }
 
-# Prepare icon (allow PNG -> ICO conversion)
+# Handle icon (convert PNG to ICO when needed)
 New-Item -ItemType Directory -Force -Path build_tmp | Out-Null
 $iconArg = $null
 if ($Icon -and (Test-Path $Icon)) {
     $ext = [System.IO.Path]::GetExtension($Icon).ToLowerInvariant()
     if ($ext -eq '.png') {
-        Exec $pip @('install','--upgrade','pillow')
         $icoPath = (Join-Path 'build_tmp' 'app_icon.ico')
+        Exec $pip @('install','--upgrade','pillow')
         $pycode = "from PIL import Image; Image.open(r'$Icon').save(r'$icoPath', sizes=[(256,256),(128,128),(64,64),(32,32),(16,16)])"
         Exec $py @('-c', $pycode)
         $iconArg = $icoPath
@@ -68,24 +70,25 @@ if ($Icon -and (Test-Path $Icon)) {
     }
 }
 
-# Build args (write to fresh output paths to avoid locks)
-$buildArgs = @('--noconfirm','--clean','--noconsole','--name','OptimusToolbox','--collect-all','PyQt6','--distpath','dist_build','--workpath','build_tmp')
-if ($OneFile) { $buildArgs = @('--onefile') + $buildArgs }
+# Build args (as array for reliable quoting)
+$buildArgs = @('--noconfirm','--clean','--noconsole','--name', $Name, '--collect-all','PyQt6','--distpath','dist_build','--workpath','build_tmp')
 if ($iconArg) { $buildArgs += @('--icon', $iconArg) }
-if ($UacAdmin){ $buildArgs = @('--uac-admin') + $buildArgs }
-
-# Include background image inside the executable/package
-if (Test-Path 'backgroundnggs.png') { $buildArgs += @('--add-data','backgroundnggs.png;.') }
-if (Test-Path 'nggs.png') { $buildArgs += @('--add-data','nggs.png;.') }
-
+$bg = 'backgroundnggs.png'
+if (Test-Path $bg) { $buildArgs += @('--add-data', "$bg;.") }
+$logo = 'nggs.png'
+if (Test-Path $logo) { $buildArgs += @('--add-data', "$logo;.") }
 $buildArgs += @('src/main.py')
+if ($OneFile) { $buildArgs = @('--onefile') + $buildArgs }
+if ($UacAdmin){ $buildArgs = @('--uac-admin') + $buildArgs }
 
 # Run PyInstaller
 Exec (Join-Path .venv 'Scripts/pyinstaller.exe') $buildArgs
 
 Write-Host "`nBuild finished." -ForegroundColor Green
 if ($OneFile) {
-    Write-Host "Executable: dist_build\OptimusToolbox.exe"
+    $p = Join-Path 'dist_build' ($Name + '.exe')
+    Write-Host "Executable: '$p'"
 } else {
-    Write-Host "Executable: dist_build\OptimusToolbox\OptimusToolbox.exe"
+    $p = Join-Path (Join-Path 'dist_build' $Name) ($Name + '.exe')
+    Write-Host "Executable: '$p'"
 }

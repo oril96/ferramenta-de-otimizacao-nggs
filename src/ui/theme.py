@@ -10,9 +10,13 @@ DARK_MODERN_QSS = r"""
     font-size: 10.5pt;
 }
 
-QWidget {
-    background-color: #121212;
-}
+QWidget { background-color: #121212; }
+
+/* Allow main central area to be transparent so background shows */
+#central_area { background-color: transparent; }
+
+/* Use slightly translucent background for groups to let bg peek through */
+QGroupBox { background-color: rgba(31,31,31,0.82); }
 
 QGroupBox {
     border: 1px solid #2A2A2A;
@@ -56,4 +60,3 @@ QScrollBar:vertical {
 QScrollBar::handle:vertical { background: #2E2E2E; min-height: 20px; }
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0px; }
 """
-

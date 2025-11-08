@@ -1,0 +1,26 @@
+{
+  "project_name": "Optimus Toolbox - Power Mode",
+  "description": "Módulo de gestão de energia do Windows com opções de consumo e desempenho.",
+  "language": "Python",
+  "modules": {
+    "power_manager": {
+      "description": "Alterna planos de energia do Windows.",
+      "plans": [
+        { "label": "⚡ Equilibrado", "guid": "381b4222-f694-41f0-9685-ff5bb260df2e" },
+        { "label": "🌙 Economia de Energia", "guid": "a1841308-3541-4fab-bc81-f71556f20b4a" },
+        { "label": "🔥 Alto Desempenho", "guid": "8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c" },
+        { "label": "🚀 Desempenho Máximo", "guid": "e9a42b02-d5df-448d-aa00-03f14749eb61" }
+      ]
+    }
+  },
+  "interface": {
+    "section": "🔋 Energia",
+    "options": [
+      { "label": "⚡ Modo Equilibrado", "action": "power_manager.set_power_plan('Equilibrado')" },
+      { "label": "🌙 Economia de Energia", "action": "power_manager.set_power_plan('Economia de energia')" },
+      { "label": "🔥 Alto Desempenho", "action": "power_manager.set_power_plan('Alto desempenho')" },
+      { "label": "🚀 Desempenho Máximo", "action": "power_manager.set_power_plan('Desempenho máximo')" }
+    ]
+  },
+  "permissions": { "admin_required": true }
+}

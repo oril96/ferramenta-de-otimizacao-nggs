@@ -1,0 +1,23 @@
+{
+  "project_name": "Optimus Toolbox - System Mode",
+  "description": "Módulo para limpeza, manutenção e otimização do sistema operacional Windows.",
+  "language": "Python",
+  "framework": "PyQt6",
+  "modules": {
+    "local_cache": {
+      "description": "Remove arquivos temporários e cache do Windows.",
+      "paths": [
+        "%TEMP%",
+        "%LOCALAPPDATA%\\Temp",
+        "%WINDIR%\\Prefetch"
+      ]
+    }
+  },
+  "interface": {
+    "section": "🧹 Sistema",
+    "options": [
+      { "label": "🗑️ Limpar Cache Local", "action": "local_cache.clear_local_cache" }
+    ]
+  },
+  "permissions": { "admin_required": true }
+}

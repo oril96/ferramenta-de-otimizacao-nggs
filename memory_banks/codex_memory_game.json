@@ -1,0 +1,29 @@
+{
+  "project_name": "Optimus Toolbox - Game Mode",
+  "description": "Módulo de otimização de jogos, incluindo ajustes no registro e BCDedit para reduzir latência e aumentar FPS.",
+  "language": "Python",
+  "modules": {
+    "game_optimizer": {
+      "description": "Aplica tweaks de desempenho para jogos.",
+      "cmd_commands": [
+        "bcdedit /set useplatformtick yes",
+        "bcdedit /set disabledynamictick yes",
+        "bcdedit /deletevalue useplatformclock",
+        "bcdedit /set nx AlwaysOff",
+        "bcdedit /set tscsyncpolicy Enhanced"
+      ],
+      "powershell_commands": [
+        "reg add \"HKCU\\System\\GameConfigStore\" /v GameDVR_Enabled /t REG_DWORD /d 0 /f",
+        "reg add \"HKCU\\Software\\Microsoft\\GameBar\" /v AllowAutoGameMode /t REG_DWORD /d 0 /f",
+        "reg add \"HKCU\\Software\\Microsoft\\GameBar\" /v AutoGameModeEnabled /t REG_DWORD /d 0 /f"
+      ]
+    }
+  },
+  "interface": {
+    "section": "🎮 Jogos",
+    "options": [
+      { "label": "🎯 Otimizar PUBG e Jogos", "action": "game_optimizer.optimize_pubg" }
+    ]
+  },
+  "permissions": { "admin_required": true }
+}

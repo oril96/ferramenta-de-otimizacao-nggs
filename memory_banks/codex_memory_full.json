@@ -1,0 +1,24 @@
+{
+  "project_name": "Optimus Toolbox - Full Project",
+  "description": "Aplicativo completo de otimização e manutenção do Windows, com módulos de rede, cache, jogos e energia, executados com privilégios de administrador.",
+  "language": "Python",
+  "framework": "PyQt6",
+  "modules": {
+    "network_cache": "Limpa cache DNS e IP.",
+    "local_cache": "Limpa arquivos temporários e prefetch.",
+    "game_optimizer": "Aplica ajustes no registro e kernel para melhorar FPS e reduzir latência.",
+    "power_manager": "Alterna planos de energia do sistema."
+  },
+  "interface": {
+    "theme": "dark_modern",
+    "sections": [
+      { "title": "🧹 Rede e Sistema", "options": ["network_cache.clear_network_cache", "local_cache.clear_local_cache"] },
+      { "title": "🎮 Jogos", "options": ["game_optimizer.optimize_pubg"] },
+      { "title": "🔋 Energia", "options": ["power_manager.set_power_plan('Equilibrado')", "power_manager.set_power_plan('Economia de energia')", "power_manager.set_power_plan('Alto desempenho')", "power_manager.set_power_plan('Desempenho máximo')"] }
+    ]
+  },
+  "permissions": {
+    "admin_required": true,
+    "auto_elevate": true
+  }
+}

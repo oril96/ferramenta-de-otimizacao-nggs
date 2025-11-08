@@ -1,0 +1,24 @@
+{
+  "project_name": "Optimus Toolbox - Network Mode",
+  "description": "Módulo para limpeza e renovação de cache de rede, corrigindo problemas de DNS e IP.",
+  "language": "Python",
+  "modules": {
+    "network_cache": {
+      "description": "Limpa caches DNS, IP e políticas de grupo.",
+      "commands": [
+        "ipconfig /flushdns",
+        "ipconfig /release",
+        "ipconfig /renew",
+        "ipconfig /registerdns",
+        "gpupdate /force"
+      ]
+    }
+  },
+  "interface": {
+    "section": "🌐 Rede",
+    "options": [
+      { "label": "🧹 Limpar Cache de Rede", "action": "network_cache.clear_network_cache" }
+    ]
+  },
+  "permissions": { "admin_required": true }
+}

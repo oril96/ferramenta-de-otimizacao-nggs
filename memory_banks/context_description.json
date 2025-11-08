@@ -1,0 +1,72 @@
+{
+  "project_name": "Optimus Toolbox",
+  "author": "Orivaldo Rodrigues",
+  "category": "Windows Optimization and Automation",
+  "primary_objective": "Desenvolver uma aplicação Windows modular e inteligente capaz de executar comandos de otimização e manutenção do sistema com privilégios de administrador, controlada por interface gráfica (PyQt6) e assistida por IA através do Codex.",
+  "context_summary": {
+    "overview": "O projeto Optimus Toolbox une automação de sistema, controle de hardware e práticas de performance para criar um painel único de manutenção Windows. A ferramenta foi desenhada para estudantes e profissionais de T.I. que desejam compreender e aplicar automações reais com impacto prático no desempenho do sistema.",
+    "philosophy": "Combinar aprendizado técnico com prática real — cada módulo (rede, cache, energia, jogos) representa um conceito essencial de administração de sistemas e é implementado de forma transparente para estudo, personalização e evolução contínua.",
+    "ai_integration": "O Codex (OpenAI’s Coding Agent) atua como copiloto do desenvolvimento, interpretando memory banks e gerando módulos de código consistentes. O MCP Server permite expor essas funções como ferramentas externas que o Codex pode invocar para automações locais."
+  },
+  "core_logic": {
+    "modular_design": "Cada módulo do Optimus Toolbox representa uma área do sistema (Rede, Cache, Energia, Jogos) e é isolado para facilitar manutenção e expansão. O núcleo da aplicação (main.py) atua como orquestrador de chamadas e interface.",
+    "admin_execution": "Todos os comandos críticos são executados com privilégios elevados (ShellExecuteW /runas) para garantir permissões adequadas.",
+    "ui_integration": "A interface é feita em PyQt6, tema dark_modern, com ícones, feedback visual e botões interativos que chamam funções de automação.",
+    "mcp_server_connection": "O MCP server é configurado no arquivo config.toml e expõe as funções principais (clear_network_cache, clear_local_cache, optimize_pubg, set_power_plan) ao Codex, permitindo que o agente IA invoque automações locais diretamente."
+  },
+  "technical_structure": {
+    "folders": {
+      "src": "Contém o código-fonte principal.",
+      "commands": "Agrupa módulos funcionais (rede, cache, energia, jogos).",
+      "ui": "Define a interface PyQt6 e os elementos visuais.",
+      "memory_banks": "Armazena arquivos JSON de contexto temático (system, power, network, game, full).",
+      "scripts": "Inclui utilitários como run_codex.py e switch_mode.py.",
+      "config": "Pode conter o config.toml do MCP server."
+    },
+    "key_files": [
+      "codex_memory_full.json",
+      "config.toml",
+      "context_description.json"
+    ]
+  },
+  "educational_focus": {
+    "learning_goals": [
+      "Ensinar como criar automações Windows com Python.",
+      "Demonstrar uso de privilégios de administrador e segurança básica.",
+      "Explorar integração de IA (Codex + MCP Server).",
+      "Praticar modularização, separação de responsabilidades e documentação de software."
+    ],
+    "recommended_audience": "Estudantes de T.I., entusiastas de automação, e desenvolvedores que desejam entender como unir software e hardware em um projeto didático e funcional."
+  },
+  "workflow_summary": {
+    "step_1": "Usuário abre o app e escolhe uma ação na interface (ex: Limpar Cache).",
+    "step_2": "O comando é enviado para o módulo correspondente dentro de src/commands.",
+    "step_3": "A função executa o script CMD/PowerShell necessário com permissões elevadas.",
+    "step_4": "O MCP server expõe as mesmas funções para o Codex, que pode chamá-las via API local.",
+    "step_5": "Os resultados são exibidos na interface e registrados nos logs.",
+    "step_6": "O Codex utiliza o memory bank e este arquivo de contexto para manter coerência ao gerar novos módulos ou modificar existentes."
+  },
+  "integration_with_codex": {
+    "purpose": "Fornecer contexto persistente e intencional ao Codex Agent, garantindo que a IA compreenda o objetivo maior do projeto, suas convenções de código, estilo visual e diretrizes de segurança.",
+    "interaction_model": [
+      "O Codex lê o memory bank ativo (ex: codex_memory_power.json).",
+      "Ele consulta o context_description.json para entender o objetivo e o padrão de design do projeto.",
+      "Gera código ou atualiza módulos mantendo coesão e boas práticas definidas.",
+      "O MCP server executa localmente as funções geradas, se solicitado."
+    ]
+  },
+  "style_and_ethics": {
+    "coding_principles": [
+      "Código limpo e bem documentado.",
+      "Separação clara entre lógica e interface.",
+      "Evitar dependências desnecessárias.",
+      "Explicar decisões técnicas no código para fins didáticos."
+    ],
+    "ethical_focus": "Todas as automações são restritas a comandos de manutenção locais, sem manipulação de rede externa ou dados sensíveis."
+  },
+  "versioning": {
+    "context_version": "1.0.0",
+    "last_update": "2025-11-08",
+    "maintainer": "Orivaldo Rodrigues"
+  }
+}
